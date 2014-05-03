@@ -1,0 +1,26 @@
+{
+  "name": "express4-mongoose-crud",
+  "version": "0.0.0",
+  "description": "An express middleware to make CRUD operations more easy.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "crud",
+    "mongoose",
+    "express"
+  ],
+  "author": "Kaique da Silva <kaique.developer@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "should": "^3.3.1",
+    "express": "^4.1.1",
+    "mongoose": "^3.8.8",
+    "superagent": "^0.18.0",
+    "body-parser": "^1.0.2"
+  },
+  "dependencies": {
+    "debug": "^0.8.1"
+  }
+}
