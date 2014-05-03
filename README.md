@@ -95,7 +95,7 @@ Finally the remove operation:
 
 ## Created by
 
-  Kaique da Silva <kaique.developer@gmail.com> under ICS license.
+  Kaique da Silva <kaique.developer@gmail.com> under ISC license.
 
 ## Development mode
 
