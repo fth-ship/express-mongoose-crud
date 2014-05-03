@@ -4,12 +4,12 @@ var debug = require('debug')('crud');
 
 
 function crudMiddlewareHandler(req, res, next) { 
-  debug(util.inspect(req.params));
   var opts = this;
   var mongoose = opts.mongoose;
   var entity = entityHandler(req.params.entity);
   var isCreate = (req.method === 'POST' || req.params.action === 'create');
   var isRead = (req.method === 'GET' || req.params.action === 'read');
+  var isList = ((req.method === 'GET' || req.params.action === 'list') && !req.params.id);
   var isUpdate = (req.method === 'PUT' || req.params.action === 'update');
   var isRemove = (req.method === 'DELETE' || req.params.action === 'remove');
 
@@ -25,6 +25,23 @@ function crudMiddlewareHandler(req, res, next) {
       callback(err, result);
     }
     entity.create(content, createHandler);
+
+    return self;
+  }
+
+  function listHandler(query, callback) {
+    debug('list handler');
+    var self = this;
+    var entity = mongoose.model(self.toEntityLabel());
+    var callback = (callback || function anonymousReadCallback() {});
+
+    query = (query || {});
+
+    function findHandler(err, result) {
+      res.locals[self.label] = result;
+      callback(err, result);
+    }
+    entity.find(query, findHandler);
 
     return self;
   }
@@ -45,23 +62,6 @@ function crudMiddlewareHandler(req, res, next) {
     return self;
   }
 
-  function listHandler(query, callback) {
-    debug('list handler');
-    var self = this;
-    var entity = mongoose.model(self.toEntityLabel());
-    var callback = (callback || function anonymousReadCallback() {});
-
-    query = (query || {});
-
-    function findHandler(err, result) {
-      res.locals[self.label] = result;
-      callback(err, result);
-    }
-    entity.find(query, findOneHandler);
-
-    return self;
-  }
-
   function updateHandler(id, content, callback) {
     debug('update handler');
     var self = this;
@@ -69,7 +69,11 @@ function crudMiddlewareHandler(req, res, next) {
     var callback = (callback || function anonymousUpdateHandler() {});
     var query = { _id: id };
 
-    entity.update(query, content, callback);
+    function updateHandler(err, result) {
+      res.locals[self.label] = result;
+      callback(err, result);
+    }
+    entity.update(query, content, updateHandler);
 
     return self;
   }
@@ -81,7 +85,11 @@ function crudMiddlewareHandler(req, res, next) {
     var callback = (callback || function anonymousRemoveHandler() {});
     var query = { _id: id };
 
-    entity.remove(query, callback);
+    function removeHandler(err, result) {
+      res.locals[self.label] = result;
+      callback(err, result);
+    }
+    entity.remove(query, removeHandler);
 
     return self;
   }
@@ -94,10 +102,10 @@ function crudMiddlewareHandler(req, res, next) {
       .register('create', createHandler);
 
     entity
-      .register('read', readHandler);
+      .register('list', listHandler);
 
     entity
-      .register('list', listHandler);
+      .register('read', readHandler);
 
     entity
       .register('update', updateHandler);
@@ -107,13 +115,15 @@ function crudMiddlewareHandler(req, res, next) {
 
     return entity;
   }
-  
+
+  debug(req.method);
+
   if (isCreate) {
     entity.perform('create', req.body, next);
-  } else if (isRead) {
-    entity.perform('read', req.params.id, next); 
   } else if (isList) {
     entity.perform('list', req.query, next);
+  } else if (isRead) {
+    entity.perform('read', req.params.id, next); 
   } else if (isUpdate) {
     entity.perform('update', req.params.id, req.body, next);
   } else if (isRemove) {

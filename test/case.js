@@ -25,6 +25,18 @@ routes.get('/:entity/:id', crud, function (req, res) {
   res.json(res.locals[req.params.entity]);
 });
 
+routes.get('/:entity', crud, function (req, res) {
+  res.json(res.locals[req.params.entity]);
+});
+
+routes.put('/:entity/:id', crud, function (req, res) {
+  res.json(res.locals[req.params.entity]);
+});
+
+routes.delete('/:entity/:id', crud, function (req, res) {
+  res.json(res.locals[req.params.entity]);
+});
+
 app.use(routes);
 
 module.exports = exports = app;
