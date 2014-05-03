@@ -1,6 +1,6 @@
 {
   "name": "express-mongoose-crud",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "An express middleware to make CRUD operations more easy.",
   "main": "index.js",
   "scripts": {
