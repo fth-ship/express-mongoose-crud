@@ -1,10 +1,10 @@
 {
-  "name": "express4-mongoose-crud",
+  "name": "express-mongoose-crud",
   "version": "0.0.0",
   "description": "An express middleware to make CRUD operations more easy.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha test/*.test.js -t 70000"
   },
   "keywords": [
     "crud",
